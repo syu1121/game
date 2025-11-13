@@ -17,13 +17,23 @@
 #include "App.h"
 #include "../Source/Screen.h"
 #include "../ImGui/imgui_impl_dxlib.hpp"
+#include "../Source/Input.h"
+
 
 #define CoGVersion (4.1)
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	//ChangeWindowMode(FALSE); // FALSEでフルスクリーン、TRUEでウィンドウモード
+	
 	SetGraphMode(Screen::WIDTH, Screen::HEIGHT, 32);
+	
+	
+	//SetGraphMode(1920, 1080, 32);
+	
+	
+	
 	
 	SetOutApplicationLogValidFlag(FALSE); // ログを出さない
 
@@ -58,6 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	AppInit();
 
 	while (true) {
+		Input::KeyStateUpdate();
 #if IMGUI
 		ImGui_ImplDXlib_NewFrame();
 		ImGui::NewFrame();

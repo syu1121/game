@@ -50,6 +50,10 @@
     <ClCompile Include="Library\Time.cpp">
       <Filter>Library</Filter>
     </ClCompile>
+    <ClCompile Include="CsvReader.cpp" />
+    <ClCompile Include="Source\StageSelectScene.cpp" />
+    <ClCompile Include="Source\Playarea.cpp" />
+    <ClCompile Include="Source\Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -111,6 +115,11 @@
     <ClInclude Include="Library\Time.h">
       <Filter>Library</Filter>
     </ClInclude>
+    <ClInclude Include="CsvReader.h" />
+    <ClInclude Include="Source\StageSelectScene.h" />
+    <ClInclude Include="Source\Playarea.h" />
+    <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\globals.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
