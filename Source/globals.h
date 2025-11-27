@@ -11,3 +11,6 @@ struct Rect
 	int x, y;
 	int w, h;
 };
+
+extern float HPberTop;
+extern float HPberDown;

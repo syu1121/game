@@ -135,7 +135,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CsvReader.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -153,6 +152,8 @@
     <ClInclude Include="Library\SceneManager.h" />
     <ClInclude Include="Library\Time.h" />
     <ClInclude Include="Source\BootScene.h" />
+    <ClInclude Include="Source\CsvReader.h" />
+    <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\globals.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\Playarea.h" />
@@ -163,7 +164,6 @@
     <ClInclude Include="Source\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CsvReader.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_dx11.cpp" />
@@ -178,6 +178,9 @@
     <ClCompile Include="Library\SceneManager.cpp" />
     <ClCompile Include="Library\Time.cpp" />
     <ClCompile Include="Source\BootScene.cpp" />
+    <ClCompile Include="Source\CsvReader.cpp" />
+    <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\globals.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Playarea.cpp" />
     <ClCompile Include="Source\PlayScene.cpp" />
