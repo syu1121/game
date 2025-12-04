@@ -17,15 +17,11 @@ struct CardType
 	int count;
 };
 
+
+
+
 namespace
 {
-	
-
-	int RightHPberLeft = 690;
-	int RightHPberRight = 1180;
-	
-	
-
 	int MaxCard = 10;
 	int cardspace = 150;
 
@@ -50,8 +46,12 @@ namespace
 Playarea::Playarea()
 {
 	enemy = new Enemy();
+	player = new Player();
 	srand((unsigned)time(NULL));
 	GenerateCards();
+
+	turn = PLAYER_TURN;
+	usecard = false;
 }
 
 Playarea::~Playarea()
@@ -61,7 +61,6 @@ Playarea::~Playarea()
 void Playarea::Update()
 {
 	
-
 	Point mousePos;
 	if (GetMousePoint(&mousePos.x, &mousePos.y) == -1)
 	{
@@ -81,46 +80,61 @@ void Playarea::Update()
 
 		int dx = mousePos.x - x;
 		int dy = mousePos.y - cardPosY;
-
-		if (dx * dx + dy * dy <= radius * radius)
+		
+		if (turn == PLAYER_TURN)
 		{
-			if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
+			DrawString(500, 500, "player", GetColor(255, 255, 255));
+
+			if (dx * dx + dy * dy <= radius * radius)
 			{
-				float hp = enemy->GetHP();
-				hp -= rand() % 200;
-				enemy->SetHP(hp);
-				
+				if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
+				{
+					
+					float ehp = enemy->GetHP();
+					ehp -= rand() % 200;
+					enemy->SetHP(ehp);
+					cards.erase(cards.begin() + i);
+
+					usecard = true;
+					if (usecard == true)
+					{
+						turn = ENEMY_TURN;
+					}
+				}
+			}
+		}
+		else if (turn == ENEMY_TURN)
+		{
+			DrawString(500, 500, "enemy", GetColor(255, 255, 255));
+
+			if (Input::IsKeepKeyDown(KEY_INPUT_A))
+			{
+				float php = player->GetHP();
+				php -= rand() % 150;
+				player->SetHP(php);
+				usecard = false;
+				if (usecard == false)
+				{
+					turn = PLAYER_TURN;
+				}
 			}
 			
 		}
-
 		int color = GetElementColor(cards[i]);
 
 		DrawCircle(x, cardPosY, radius, color, TRUE);
 	}
 	
-	if (Input::IsButtonDown(MOUSE_INPUT_RIGHT))
-	{
-		GenerateCards();
-	}
-
 	
+
 }
 
 void Playarea::Draw()
 {
-	DrawBox(RightHPberLeft, HPberTop, RightHPberRight, HPberDown, GetColor(0, 255, 0), TRUE);
 	
-
-	DrawBox(100, HPberTop, 590, HPberDown, GetColor(0, 255, 0), FALSE);
+	DrawBox(100, HPberTop, 590, HPberUnder, GetColor(0, 255, 0), FALSE);
 	DrawCircle(640, 75, 50, GetColor(255, 255, 255), TRUE);
-	DrawBox(690, HPberTop, 1180, HPberDown, GetColor(0, 255, 0), FALSE);
-
-	
-
-	
-
-	
+	DrawBox(690, HPberTop, 1180, HPberUnder, GetColor(0, 255, 0), FALSE);
 }
 
 void Playarea::GenerateCards()
@@ -155,7 +169,7 @@ int Playarea::GetElementColor(int element)
 	case 2:
 		return GetColor(0, 255, 0);
 	case 3:
-		return GetColor(255, 255, 255);
+		return GetColor(185, 196, 183);
 	}
 	return GetColor(255, 255, 255);
 }

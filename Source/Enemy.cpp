@@ -17,10 +17,10 @@ namespace
 
 
 Enemy::Enemy()
-	:csv_("data/csv01.csv")
+	:csv_("data/Enemy.csv")
 {
-	EnemyHP = csv_.GetFloat(0, 1);
-	EnemyMaxHP = csv_.GetInt(0, 1);
+	EnemyHP = csv_.GetFloat(3, 1);
+	EnemyMaxHP = csv_.GetFloat(3, 1);
 
 }
 
@@ -53,14 +53,14 @@ void Enemy::Draw()
 	EnemyHPbarWidth = EnemyHPbar;
 	EnemyHPbar = 0;
 
-	DrawBox(LeftHPberLeft + EnemyHPbarWidth, HPberTop, LeftHPberRight, HPberDown, GetColor(0, 255, 0), TRUE);
+	DrawBox(LeftHPberLeft + EnemyHPbarWidth, HPberTop, LeftHPberRight, HPberUnder, GetColor(0, 255, 0), TRUE);
 	if (rate <= 0.2f)
 	{
-		DrawBox(LeftHPberLeft + EnemyHPbarWidth, HPberTop, LeftHPberRight, HPberDown, GetColor(255, 0, 0), TRUE);
+		DrawBox(LeftHPberLeft + EnemyHPbarWidth, HPberTop, LeftHPberRight, HPberUnder, GetColor(255, 0, 0), TRUE);
 	}
 	else if (rate <= 0.5f)
 	{
-		DrawBox(LeftHPberLeft + EnemyHPbarWidth, HPberTop, LeftHPberRight, HPberDown, GetColor(255, 255, 0), TRUE);
+		DrawBox(LeftHPberLeft + EnemyHPbarWidth, HPberTop, LeftHPberRight, HPberUnder, GetColor(255, 255, 0), TRUE);
 	}
 
 	

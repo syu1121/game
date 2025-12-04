@@ -13,4 +13,4 @@ struct Rect
 };
 
 extern float HPberTop;
-extern float HPberDown;
+extern float HPberUnder;
