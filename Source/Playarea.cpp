@@ -29,6 +29,9 @@ namespace
 	int cardPosY = 600;
 	int radius = 30;
 
+	int maxTurn = 5;
+	int turnCount = 0;
+
 	const int fire = 0;
 	const int water = 1;
 	const int wood = 2;
@@ -93,6 +96,7 @@ void Playarea::Update()
 					float ehp = enemy->GetHP();
 					ehp -= rand() % 200;
 					enemy->SetHP(ehp);
+
 					cards.erase(cards.begin() + i);
 
 					usecard = true;
@@ -100,6 +104,7 @@ void Playarea::Update()
 					{
 						turn = ENEMY_TURN;
 					}
+					break;
 				}
 			}
 		}
@@ -117,12 +122,23 @@ void Playarea::Update()
 				{
 					turn = PLAYER_TURN;
 				}
+				turnCount++;
+			}
+
+			if (maxTurn < turnCount)
+			{
+				
 			}
 			
 		}
 		int color = GetElementColor(cards[i]);
 
 		DrawCircle(x, cardPosY, radius, color, TRUE);
+	}
+
+	if (cards.size() == 0)
+	{
+		GenerateCards();
 	}
 	
 	
@@ -134,6 +150,9 @@ void Playarea::Draw()
 	
 	DrawBox(100, HPberTop, 590, HPberUnder, GetColor(0, 255, 0), FALSE);
 	DrawCircle(640, 75, 50, GetColor(255, 255, 255), TRUE);
+	DrawFormatString(638, 40, GetColor(0, 0, 255),"%d", turnCount);
+	DrawFormatString(638, 50, GetColor(0, 0, 255), "--");
+	DrawFormatString(638, 60, GetColor(0, 0, 255), "%d", maxTurn);
 	DrawBox(690, HPberTop, 1180, HPberUnder, GetColor(0, 255, 0), FALSE);
 }
 

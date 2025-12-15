@@ -57,6 +57,7 @@
     <ClCompile Include="Source\globals.cpp" />
     <ClCompile Include="Source\CsvReader.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\ResultScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -125,6 +126,7 @@
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\CsvReader.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\ResultScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
