@@ -84,6 +84,10 @@ void Playarea::Update()
 		int dx = mousePos.x - x;
 		int dy = mousePos.y - cardPosY;
 		
+
+		float ehp = enemy->GetHP();
+		float php = player->GetHP();
+
 		if (turn == PLAYER_TURN)
 		{
 			DrawString(500, 500, "player", GetColor(255, 255, 255));
@@ -93,7 +97,7 @@ void Playarea::Update()
 				if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
 				{
 					
-					float ehp = enemy->GetHP();
+					
 					ehp -= rand() % 200;
 					enemy->SetHP(ehp);
 
@@ -114,7 +118,9 @@ void Playarea::Update()
 
 			if (Input::IsKeepKeyDown(KEY_INPUT_A))
 			{
-				float php = player->GetHP();
+				int cnt = 0;
+				cnt++;
+				if (cnt )
 				php -= rand() % 150;
 				player->SetHP(php);
 				usecard = false;
@@ -125,11 +131,17 @@ void Playarea::Update()
 				turnCount++;
 			}
 
-			if (maxTurn < turnCount)
-			{
-				
-			}
 			
+			
+		}
+
+		if (php <= 0)
+		{
+			SceneManager::ChangeScene("RESULT");
+		}
+		if (ehp <= 0)
+		{
+			SceneManager::ChangeScene("RESULT");
 		}
 		int color = GetElementColor(cards[i]);
 
