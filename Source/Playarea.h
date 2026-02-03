@@ -16,7 +16,7 @@ class Playarea
 	Player* player;
 
 	Turn turn;
-	bool usecard;
+	
 public:
 	Playarea();
 	~Playarea();
@@ -25,4 +25,6 @@ public:
 
 	void GenerateCards();
 	int GetElementColor(int element);
+
+	float GetReat(int a, int b);
 };

@@ -10,15 +10,13 @@
 using namespace std;
 
 vector<int> cards;
+vector<int> selectedcard;
 
 struct CardType
 {
 	int element;
 	int count;
 };
-
-
-
 
 namespace
 {
@@ -54,7 +52,6 @@ Playarea::Playarea()
 	GenerateCards();
 
 	turn = PLAYER_TURN;
-	usecard = false;
 }
 
 Playarea::~Playarea()
@@ -70,7 +67,6 @@ void Playarea::Update()
 		return;
 	}
 
-
 	int displaycard = 5;
 	if (cards.size() < displaycard)
 	{
@@ -84,7 +80,6 @@ void Playarea::Update()
 		int dx = mousePos.x - x;
 		int dy = mousePos.y - cardPosY;
 		
-
 		float ehp = enemy->GetHP();
 		float php = player->GetHP();
 
@@ -96,43 +91,38 @@ void Playarea::Update()
 			{
 				if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
 				{
-					
-					
-					ehp -= rand() % 200;
-					enemy->SetHP(ehp);
-
-					cards.erase(cards.begin() + i);
-
-					usecard = true;
-					if (usecard == true)
+					if (selectedcard.size() < 2)
 					{
-						turn = ENEMY_TURN;
-					}
-					break;
+						selectedcard.push_back(i);
+					}	
 				}
+			}
+
+			if (selectedcard.size() == 2)
+			{
+				ehp -= rand() % 200;
+				enemy->SetHP(ehp);
+
+				for (int j = 1; i >= 0; j--)
+				{
+					cards.erase(cards.begin() + selectedcard[j]);
+				}
+				selectedcard.clear();
+
+				turn = ENEMY_TURN;
+
+				break;
 			}
 		}
 		else if (turn == ENEMY_TURN)
 		{
 			DrawString(500, 500, "enemy", GetColor(255, 255, 255));
 
-			if (Input::IsKeepKeyDown(KEY_INPUT_A))
-			{
-				int cnt = 0;
-				cnt++;
-				if (cnt )
-				php -= rand() % 150;
-				player->SetHP(php);
-				usecard = false;
-				if (usecard == false)
-				{
-					turn = PLAYER_TURN;
-				}
-				turnCount++;
-			}
-
+			php -= rand() % 150;
+			player->SetHP(php);
 			
-			
+			turn = PLAYER_TURN;
+			turnCount++;
 		}
 
 		if (php <= 0)
@@ -144,7 +134,7 @@ void Playarea::Update()
 			SceneManager::ChangeScene("RESULT");
 		}
 		int color = GetElementColor(cards[i]);
-
+		
 		DrawCircle(x, cardPosY, radius, color, TRUE);
 	}
 
@@ -152,9 +142,6 @@ void Playarea::Update()
 	{
 		GenerateCards();
 	}
-	
-	
-
 }
 
 void Playarea::Draw()
@@ -162,9 +149,9 @@ void Playarea::Draw()
 	
 	DrawBox(100, HPberTop, 590, HPberUnder, GetColor(0, 255, 0), FALSE);
 	DrawCircle(640, 75, 50, GetColor(255, 255, 255), TRUE);
-	DrawFormatString(638, 40, GetColor(0, 0, 255),"%d", turnCount);
+	/*DrawFormatString(638, 40, GetColor(0, 0, 255),"%d", turnCount);
 	DrawFormatString(638, 50, GetColor(0, 0, 255), "--");
-	DrawFormatString(638, 60, GetColor(0, 0, 255), "%d", maxTurn);
+	DrawFormatString(638, 60, GetColor(0, 0, 255), "%d", maxTurn);*/
 	DrawBox(690, HPberTop, 1180, HPberUnder, GetColor(0, 255, 0), FALSE);
 }
 
@@ -180,12 +167,10 @@ void Playarea::GenerateCards()
 		}
 	}
 
-
 	for (int i = 0; i < cards.size(); i++)
 	{
 		int r = rand() % cards.size();
 		swap(cards[i], cards[r]);
-
 	}
 }
 
@@ -203,4 +188,35 @@ int Playarea::GetElementColor(int element)
 		return GetColor(185, 196, 183);
 	}
 	return GetColor(255, 255, 255);
+}
+
+float Playarea::GetReat(int a, int b)
+{
+
+	if (a == none || b == none)
+	{
+		return 1.0f;
+	}
+
+	if (a == b)
+	{
+		return 1.0f;
+	}
+
+	if (a == fire && b == wood)
+	{
+		return 1.5f;
+	}
+
+	if (a == wood && b == water)
+	{
+		return 1.5f;
+	}
+
+	if (a == water && b == fire)
+	{
+		return 1.5f;
+	}
+
+	return 0.5f;
 }
