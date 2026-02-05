@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <algorithm>
 
 
 using namespace std;
@@ -73,7 +74,79 @@ void Playarea::Update()
 		displaycard = cards.size();
 	}
 
-	for (int i = 0; i < displaycard; i++)
+	if (turn == PLAYER_TURN)
+	{
+		for (int i = 0; i < displaycard; i++)
+		{
+			int x = cardPosX + i * cardspace;
+
+			int dx = mousePos.x - x;
+			int dy = mousePos.y - cardPosY;
+
+			if (dx * dx + dy * dy <= radius * radius)
+			{
+				if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
+				{
+					if (selectedcard.size() < 2 && find(selectedcard.begin(),selectedcard.end(),i) == selectedcard.end())
+					{
+						selectedcard.push_back(i);
+					}
+				}
+			}
+		}
+	}
+
+
+	if (turn == PLAYER_TURN && selectedcard.size() == 2)
+	{
+		int p = cards[selectedcard[0]];
+		int e = rand() % 4;
+
+		playerElement = p;
+		enemyElement = e;
+
+		float eHP = enemy->GetHP();
+		
+
+		float rate = GetRate(p, e);
+		float dmg = 100 * rate;
+
+
+
+		enemy->SetHP(eHP - dmg);
+
+		sort(selectedcard.begin(), selectedcard.end(), greater<int>());
+		for (int idx : selectedcard)
+		{
+			cards.erase(cards.begin() + idx);
+		}
+
+
+		selectedcard.clear();
+		turn = ENEMY_TURN;
+	}
+
+	if (turn == ENEMY_TURN)
+	{
+		float pHP = player->GetHP();
+		player->SetHP(pHP - (rand() % 150));
+		
+		turn = PLAYER_TURN;
+	}
+
+
+	if (cards.size() == 0)
+	{
+		GenerateCards();
+	}
+
+	if (player->GetHP() <= 0 || enemy->GetHP() <= 0)
+	{
+		SceneManager::ChangeScene("RESULT");
+	}
+
+
+	/*for (int i = 0; i < displaycard; i++)
 	{
 		int x = cardPosX + i * cardspace;
 
@@ -100,6 +173,15 @@ void Playarea::Update()
 
 			if (selectedcard.size() == 2)
 			{
+
+				int p = cards[selectedcard[0]];
+				int e = rand() % 4;
+
+				float rate = GetRate(p, e);
+
+				int max = 5;
+				int min = -5;
+
 				ehp -= rand() % 200;
 				enemy->SetHP(ehp);
 
@@ -141,12 +223,34 @@ void Playarea::Update()
 	if (cards.size() == 0)
 	{
 		GenerateCards();
-	}
+	}*/
 }
 
 void Playarea::Draw()
 {
-	
+	int displaycard = min(5, (int)cards.size());
+
+	for (int i = 0; i < displaycard; i++)
+	{
+		int x = cardPosX + i * cardspace;
+		int color = GetElementColor(cards[i]);
+
+		// ‘I‘ð’†‚ÍˆÃ‚­
+		for (int idx : selectedcard)
+		{
+			if (idx == i)
+			{
+				color = GetColor(100, 100, 100);
+			}
+		}
+
+		DrawCircle(x, cardPosY, radius, color, TRUE);
+	}
+
+	DrawFormatString(50, 200, GetColor(255, 255, 255), "PLAYER  : %s", GetElementName(playerElement));
+	DrawFormatString(50, 230, GetColor(255, 255, 255), "ENEMY   : %s", GetElementName(enemyElement));
+
+
 	DrawBox(100, HPberTop, 590, HPberUnder, GetColor(0, 255, 0), FALSE);
 	DrawCircle(640, 75, 50, GetColor(255, 255, 255), TRUE);
 	/*DrawFormatString(638, 40, GetColor(0, 0, 255),"%d", turnCount);
@@ -190,7 +294,7 @@ int Playarea::GetElementColor(int element)
 	return GetColor(255, 255, 255);
 }
 
-float Playarea::GetReat(int a, int b)
+float Playarea::GetRate(int a, int b)
 {
 
 	if (a == none || b == none)
@@ -219,4 +323,21 @@ float Playarea::GetReat(int a, int b)
 	}
 
 	return 0.5f;
+}
+
+const char* Playarea::GetElementName(int element)
+{
+	switch (element)
+	{
+	case 0: 
+		return "FIRE";
+	case 1:
+		return "WATER";
+	case 2:
+		return "WOOD";
+	case 3:
+		return "NONE";
+	default:
+		return "UNKNOWN";
+	}
 }

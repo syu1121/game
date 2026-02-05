@@ -26,5 +26,12 @@ public:
 	void GenerateCards();
 	int GetElementColor(int element);
 
-	float GetReat(int a, int b);
+	float GetRate(int a, int b);
+	const char* GetElementName(int element);
+
+	int playerElement;
+	int enemyElement;
+	float playerDamage;
+	float enemyDamage;
+
 };
