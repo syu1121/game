@@ -6,6 +6,7 @@
 #include "PlayScene.h"
 #include "ResultScene.h"
 #include "StageSelectScene.h"
+#include "EnemyScene.h"
 SceneBase* SceneFactory::CreateFirst()
 {
 	return new BootScene();
@@ -24,6 +25,10 @@ SceneBase * SceneFactory::Create(const std::string & name)
 	if (name == "PLAY")
 	{
 		return new PlayScene();
+	}
+	if (name == "ENEMY SCENE")
+	{
+		return new EnemyScene();
 	}
 	if (name == "RESULT")
 	{

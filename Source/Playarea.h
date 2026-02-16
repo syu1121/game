@@ -26,8 +26,10 @@ public:
 	void GenerateCards();
 	int GetElementColor(int element);
 
-	float GetRate(int a, int b);
+	float GetRate(int p, int e);
 	const char* GetElementName(int element);
+
+	void EnemySelectCards();
 
 	int playerElement;
 	int enemyElement;

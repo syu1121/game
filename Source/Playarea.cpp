@@ -7,11 +7,13 @@
 #include <vector>
 #include <algorithm>
 
-
 using namespace std;
 
 vector<int> cards;
+vector<int> enemycards;
+
 vector<int> selectedcard;
+vector<int> enemyselected;
 
 struct CardType
 {
@@ -74,6 +76,11 @@ void Playarea::Update()
 		displaycard = cards.size();
 	}
 
+	if (mousePos.x > 50 && mousePos.x < 100 && mousePos.y > 300 && mousePos.y < 400 && Input::IsButtonDown(MOUSE_INPUT_LEFT))
+	{
+		SceneManager::ChangeScene("ENEMY SCENE");
+	}
+
 	if (turn == PLAYER_TURN)
 	{
 		for (int i = 0; i < displaycard; i++)
@@ -99,19 +106,16 @@ void Playarea::Update()
 
 	if (turn == PLAYER_TURN && selectedcard.size() == 2)
 	{
-		int p = cards[selectedcard[0]];
-		int e = rand() % 4;
+		
 
-		playerElement = p;
-		enemyElement = e;
+		playerElement = cards[selectedcard[0]];
+		enemyElement = enemycards[enemyselected[0]];
 
 		float eHP = enemy->GetHP();
 		
 
-		float rate = GetRate(p, e);
+		float rate = GetRate(playerElement, enemyElement);
 		float dmg = 100 * rate;
-
-
 
 		enemy->SetHP(eHP - dmg);
 
@@ -121,8 +125,14 @@ void Playarea::Update()
 			cards.erase(cards.begin() + idx);
 		}
 
+		sort(enemyselected.begin(), enemyselected.end(), greater<int>());
+		for (int idx : enemyselected)
+		{
+			enemycards.erase(enemycards.begin() + idx);
+		}
 
 		selectedcard.clear();
+		enemyselected.clear();
 		turn = ENEMY_TURN;
 	}
 
@@ -229,6 +239,7 @@ void Playarea::Update()
 void Playarea::Draw()
 {
 	int displaycard = min(5, (int)cards.size());
+	int disenemycard = min(5, (int)enemycards.size());
 
 	for (int i = 0; i < displaycard; i++)
 	{
@@ -247,6 +258,16 @@ void Playarea::Draw()
 		DrawCircle(x, cardPosY, radius, color, TRUE);
 	}
 
+	DrawBox(50, 300, 150, 400, GetColor(255, 255, 255), FALSE);
+
+
+	for (int i = 0; i < disenemycard; i++)
+	{
+		int color = GetElementColor(enemycards[i]);
+		DrawBox()
+		
+	}
+
 	DrawFormatString(50, 200, GetColor(255, 255, 255), "PLAYER  : %s", GetElementName(playerElement));
 	DrawFormatString(50, 230, GetColor(255, 255, 255), "ENEMY   : %s", GetElementName(enemyElement));
 
@@ -262,12 +283,15 @@ void Playarea::Draw()
 void Playarea::GenerateCards()
 {
 	cards.clear();
+	enemycards.clear();
+
 
 	for (const auto& type : cardTypes)
 	{
 		for (int i = 0; i < type.count; i++)
 		{
 			cards.push_back(type.element);
+			enemycards.push_back(type.element);
 		}
 	}
 
@@ -275,6 +299,7 @@ void Playarea::GenerateCards()
 	{
 		int r = rand() % cards.size();
 		swap(cards[i], cards[r]);
+		swap(enemycards[i], enemycards[r]);
 	}
 }
 
@@ -294,30 +319,30 @@ int Playarea::GetElementColor(int element)
 	return GetColor(255, 255, 255);
 }
 
-float Playarea::GetRate(int a, int b)
+float Playarea::GetRate(int p, int e)
 {
 
-	if (a == none || b == none)
+	if (p == none || e == none)
 	{
 		return 1.0f;
 	}
 
-	if (a == b)
+	if (p == e)
 	{
 		return 1.0f;
 	}
 
-	if (a == fire && b == wood)
+	if (p == fire && e == wood)
 	{
 		return 1.5f;
 	}
 
-	if (a == wood && b == water)
+	if (p == wood && e == water)
 	{
 		return 1.5f;
 	}
 
-	if (a == water && b == fire)
+	if (p == water && e == fire)
 	{
 		return 1.5f;
 	}
@@ -339,5 +364,20 @@ const char* Playarea::GetElementName(int element)
 		return "NONE";
 	default:
 		return "UNKNOWN";
+	}
+}
+
+void Playarea::EnemySelectCards()
+{
+	enemyselected.clear();
+
+	while (enemyselected.size() < 2)
+	{
+		int i = rand() % enemycards.size();
+
+		if (find(enemyselected.begin(), enemyselected.end(), i) == enemyselected.end());
+		{
+			enemyselected.push_back(i);
+		}
 	}
 }

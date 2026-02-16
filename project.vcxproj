@@ -154,6 +154,7 @@
     <ClInclude Include="Source\BootScene.h" />
     <ClInclude Include="Source\CsvReader.h" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\EnemyScene.h" />
     <ClInclude Include="Source\globals.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\Playarea.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="Source\BootScene.cpp" />
     <ClCompile Include="Source\CsvReader.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\EnemyScene.cpp" />
     <ClCompile Include="Source\globals.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Playarea.cpp" />
