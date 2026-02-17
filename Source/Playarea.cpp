@@ -15,6 +15,7 @@ vector<int> enemycards;
 vector<int> selectedcard;
 vector<int> enemyselected;
 
+
 struct CardType
 {
 	int element;

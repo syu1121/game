@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "Player.h"
 
+
 enum Turn
 {
 	PLAYER_TURN,
@@ -36,4 +37,5 @@ public:
 	float playerDamage;
 	float enemyDamage;
 
+	
 };
