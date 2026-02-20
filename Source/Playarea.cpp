@@ -131,8 +131,11 @@ void Playarea::Update()
 		int e1 = enemycards[enemyselected[0]];
 		int e2 = enemycards[enemyselected[1]];
 
-		float dmg1 = 200 * GetRate(p1, e1);
-		float dmg2 = 200 * GetRate(p2, e2);
+		float rate1 = GetRate(p1, e1);
+		float rate2 = GetRate(p2, e2);
+
+		float dmg1 = 200 * rate1;
+		float dmg2 = 200 * rate2;
 
 		int enemyHP = enemy->GetHP();
 		enemy->SetHP(enemyHP - (dmg1 + dmg2));
@@ -144,12 +147,38 @@ void Playarea::Update()
 		player->SetHP(playerHP - (enemydmg1 + enemydmg2));
 
 
-		string log = string("Player: ") + GetElementName(p1) + " vs Enemy: " + GetElementName(e1) + " -> " + to_string((int)dmg1) + " damage";
-		string log2 = string("Player: ") +GetElementName(p2) + " vs Enemy: " + GetElementName(e2) + " -> " + to_string((int)dmg2) + " damage";
+		string result1 = "";
+		if (rate1 > 1.0f)
+		{
+			result1 = " WEAK ";
+		}
+		else if (rate1 < 1.0f)
+		{
+			result1 = " RESIST ";
+		}
+
+		string result2 = "";
+		if (rate2 > 1.0f)
+		{
+			result2 = " WEAK ";
+		}
+		else if (rate2 < 1.0f)
+		{
+			result2 = " RESIST ";
+		}
+
+		string log = string("Player: ") + GetElementName(p1) + " vs Enemy: " + GetElementName(e1) + " -> " + to_string((int)dmg1) + " damage" + result1;
+		string log2 = string("Player: ") +GetElementName(p2) + " vs Enemy: " + GetElementName(e2) + " -> " + to_string((int)dmg2) + " damage" + result2;
 
 		battleLog.push_back(log);
 		battleLog.push_back(log2);
 		
+		string enemylog = string("Enemy: ") + GetElementName(e1) + " vs Player: " + GetElementName(p1) + " -> " + to_string((int)enemydmg1) + " damage";
+		string enemylog2 = string("Enemy: ") + GetElementName(e2) + " vs Player: " + GetElementName(p2) + " -> " + to_string((int)enemydmg2) + " damage";
+
+		battleLog.push_back(enemylog);
+		battleLog.push_back(enemylog2);
+
 
 
 
@@ -238,6 +267,11 @@ void Playarea::Draw()
 	for (int i = 0; i < battleLog.size(); i++)
 	{
 		DrawString(50, 550 + i * 20, battleLog[i].c_str(), GetColor(255, 255, 255));
+	}
+
+	if (battleLog.size() > 6)
+	{
+		battleLog.erase(battleLog.begin());
 	}
 
 	DrawBox(100, HPberTop, 590, HPberUnder, GetColor(0, 255, 0), FALSE);
