@@ -6,8 +6,10 @@
 
 enum Turn
 {
+	ENEMY_TURN,
 	PLAYER_TURN,
-	ENEMY_TURN
+	BATTLE_PHASE
+	
 };
 
 class Playarea

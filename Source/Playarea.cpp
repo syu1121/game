@@ -6,6 +6,7 @@
 #include <ctime>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 using namespace std;
 
@@ -14,6 +15,8 @@ vector<int> enemycards;
 
 vector<int> selectedcard;
 vector<int> enemyselected;
+
+vector<std::string> battleLog;
 
 
 struct CardType
@@ -55,7 +58,7 @@ Playarea::Playarea()
 	srand((unsigned)time(NULL));
 	GenerateCards();
 
-	turn = PLAYER_TURN;
+	turn = ENEMY_TURN;
 }
 
 Playarea::~Playarea()
@@ -108,17 +111,47 @@ void Playarea::Update()
 	if (turn == PLAYER_TURN && selectedcard.size() == 2)
 	{
 		
+		
+		
+		turn = BATTLE_PHASE;
+	}
 
-		playerElement = cards[selectedcard[0]];
-		enemyElement = enemycards[enemyselected[0]];
+	if (turn == ENEMY_TURN)
+	{
+		EnemySelectCards();
+		
+		turn = PLAYER_TURN;
+	}
 
-		float eHP = enemy->GetHP();
+	if (turn == BATTLE_PHASE)
+	{
+		int p1 = cards[selectedcard[0]];
+		int p2 = cards[selectedcard[1]];
+
+		int e1 = enemycards[enemyselected[0]];
+		int e2 = enemycards[enemyselected[1]];
+
+		float dmg1 = 200 * GetRate(p1, e1);
+		float dmg2 = 200 * GetRate(p2, e2);
+
+		int enemyHP = enemy->GetHP();
+		enemy->SetHP(enemyHP - (dmg1 + dmg2));
+
+		float enemydmg1 = 200 * GetRate(e1, p1);
+		float enemydmg2 = 200 * GetRate(e2, p2);
+
+		int playerHP = player->GetHP();
+		player->SetHP(playerHP - (enemydmg1 + enemydmg2));
+
+
+		string log = string("Player: ") + GetElementName(p1) + " vs Enemy: " + GetElementName(e1) + " -> " + to_string((int)dmg1) + " damage";
+		string log2 = string("Player: ") +GetElementName(p2) + " vs Enemy: " + GetElementName(e2) + " -> " + to_string((int)dmg2) + " damage";
+
+		battleLog.push_back(log);
+		battleLog.push_back(log2);
 		
 
-		float rate = GetRate(playerElement, enemyElement);
-		float dmg = 100 * rate;
 
-		enemy->SetHP(eHP - dmg);
 
 		sort(selectedcard.begin(), selectedcard.end(), greater<int>());
 		for (int idx : selectedcard)
@@ -134,15 +167,8 @@ void Playarea::Update()
 
 		selectedcard.clear();
 		enemyselected.clear();
-		turn = ENEMY_TURN;
-	}
 
-	if (turn == ENEMY_TURN)
-	{
-		float pHP = player->GetHP();
-		player->SetHP(pHP - (rand() % 150));
-		
-		turn = PLAYER_TURN;
+		turn = ENEMY_TURN;
 	}
 
 
@@ -157,90 +183,21 @@ void Playarea::Update()
 	}
 
 
-	/*for (int i = 0; i < displaycard; i++)
-	{
-		int x = cardPosX + i * cardspace;
-
-		int dx = mousePos.x - x;
-		int dy = mousePos.y - cardPosY;
-		
-		float ehp = enemy->GetHP();
-		float php = player->GetHP();
-
-		if (turn == PLAYER_TURN)
-		{
-			DrawString(500, 500, "player", GetColor(255, 255, 255));
-
-			if (dx * dx + dy * dy <= radius * radius)
-			{
-				if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
-				{
-					if (selectedcard.size() < 2)
-					{
-						selectedcard.push_back(i);
-					}	
-				}
-			}
-
-			if (selectedcard.size() == 2)
-			{
-
-				int p = cards[selectedcard[0]];
-				int e = rand() % 4;
-
-				float rate = GetRate(p, e);
-
-				int max = 5;
-				int min = -5;
-
-				ehp -= rand() % 200;
-				enemy->SetHP(ehp);
-
-				for (int j = 1; i >= 0; j--)
-				{
-					cards.erase(cards.begin() + selectedcard[j]);
-				}
-				selectedcard.clear();
-
-				turn = ENEMY_TURN;
-
-				break;
-			}
-		}
-		else if (turn == ENEMY_TURN)
-		{
-			DrawString(500, 500, "enemy", GetColor(255, 255, 255));
-
-			php -= rand() % 150;
-			player->SetHP(php);
-			
-			turn = PLAYER_TURN;
-			turnCount++;
-		}
-
-		if (php <= 0)
-		{
-			SceneManager::ChangeScene("RESULT");
-		}
-		if (ehp <= 0)
-		{
-			SceneManager::ChangeScene("RESULT");
-		}
-		int color = GetElementColor(cards[i]);
-		
-		DrawCircle(x, cardPosY, radius, color, TRUE);
-	}
-
-	if (cards.size() == 0)
-	{
-		GenerateCards();
-	}*/
+	
 }
 
 void Playarea::Draw()
 {
 	int displaycard = min(5, (int)cards.size());
 	int disenemycard = min(5, (int)enemycards.size());
+
+
+	int startX = 50;
+	int endX = 150;
+	int y = 300;
+	int boxSize = 15;   // ” ‚Ì‘å‚«‚³
+
+	float interval = (endX - startX) / 5.0f;
 
 	for (int i = 0; i < displaycard; i++)
 	{
@@ -259,19 +216,29 @@ void Playarea::Draw()
 		DrawCircle(x, cardPosY, radius, color, TRUE);
 	}
 
-	DrawBox(50, 300, 150, 400, GetColor(255, 255, 255), FALSE);
+	DrawBox(50, 300, 150, 500, GetColor(255, 255, 255), FALSE);
 
 
 	for (int i = 0; i < disenemycard; i++)
 	{
 		int color = GetElementColor(enemycards[i]);
-		DrawBox()
+		int x = startX + interval * i;
+		DrawBox(x, 480, x + boxSize, 500, color, TRUE);
 		
 	}
 
-	DrawFormatString(50, 200, GetColor(255, 255, 255), "PLAYER  : %s", GetElementName(playerElement));
-	DrawFormatString(50, 230, GetColor(255, 255, 255), "ENEMY   : %s", GetElementName(enemyElement));
+	if (!enemyselected.empty())
+	{
+		int element = enemycards[enemyselected[0]];
+		int color = GetElementColor(element);
 
+		DrawCircle(100, 350, 20, color, TRUE);
+	}
+
+	for (int i = 0; i < battleLog.size(); i++)
+	{
+		DrawString(50, 550 + i * 20, battleLog[i].c_str(), GetColor(255, 255, 255));
+	}
 
 	DrawBox(100, HPberTop, 590, HPberUnder, GetColor(0, 255, 0), FALSE);
 	DrawCircle(640, 75, 50, GetColor(255, 255, 255), TRUE);
@@ -376,7 +343,7 @@ void Playarea::EnemySelectCards()
 	{
 		int i = rand() % enemycards.size();
 
-		if (find(enemyselected.begin(), enemyselected.end(), i) == enemyselected.end());
+		if (find(enemyselected.begin(), enemyselected.end(), i) == enemyselected.end())
 		{
 			enemyselected.push_back(i);
 		}
