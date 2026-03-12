@@ -1,5 +1,6 @@
 #pragma once
 #include "../Library/SceneBase.h"
+#include "Map.h"
 
 /// <summary>
 /// タイトルシーン
@@ -13,4 +14,6 @@ public:
 	~StageSelectScene();
 	void Update() override;
 	void Draw() override;
+
+	Map* map;
 };

@@ -11,7 +11,7 @@ ResultScene::~ResultScene()
 
 void ResultScene::Update()
 {
-	if (CheckHitKey(KEY_INPUT_S)) {
+	if (CheckHitKey(KEY_INPUT_T)) {
 		SceneManager::ChangeScene("TITLE");
 	}
 	if (CheckHitKey(KEY_INPUT_ESCAPE)) {
@@ -23,5 +23,5 @@ void ResultScene::Update()
 void ResultScene::Draw()
 {
 	DrawString(0, 0, "RESULT SCENE", GetColor(255, 255, 255));
-	DrawString(100, 400, "Push [P]Key To Play", GetColor(255, 255, 255));
+	DrawString(100, 400, "Push [T]Key To Title", GetColor(255, 255, 255));
 }

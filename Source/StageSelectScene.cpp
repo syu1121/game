@@ -3,6 +3,8 @@
 
 StageSelectScene::StageSelectScene()
 {
+	map = new Map();
+
 }
 
 StageSelectScene::~StageSelectScene()
@@ -11,10 +13,9 @@ StageSelectScene::~StageSelectScene()
 
 void StageSelectScene::Update()
 {
-	if (CheckHitKey(KEY_INPUT_P)) {
-		SceneManager::ChangeScene("PLAY");
-	}
-	if (CheckHitKey(KEY_INPUT_ESCAPE)) {
+	
+	if (CheckHitKey(KEY_INPUT_ESCAPE)) 
+	{
 		SceneManager::Exit();
 	}
 }

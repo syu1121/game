@@ -17,10 +17,12 @@ namespace
 
 
 Enemy::Enemy()
-	:csv_("data/Enemy.csv")
 {
-	EnemyHP = csv_.GetFloat(3, 1);
-	EnemyMaxHP = csv_.GetFloat(3, 1);
+	/*EnemyHP = csv_.GetFloat(3, 1);
+	EnemyMaxHP = csv_.GetFloat(3, 1);*/
+
+	EnemyHP = 2000;
+	EnemyMaxHP = 2000;
 
 }
 

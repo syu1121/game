@@ -16,11 +16,13 @@ namespace
 }
 
 Player::Player()
-	: csv_("data/Player.csv")
 {
-	PlayerHP = csv_.GetFloat(3, 1);
+	/*PlayerHP = csv_.GetFloat(3, 1);
 	PlayerMaxHP = csv_.GetFloat(3, 1);
-	PlayerATK = csv_.GetInt(1, 2);
+	PlayerATK = csv_.GetInt(1, 2);*/
+
+	PlayerHP = 2000;
+	PlayerMaxHP = 2000;
 }
 
 Player::~Player()

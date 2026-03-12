@@ -59,6 +59,7 @@
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\ResultScene.cpp" />
     <ClCompile Include="Source\EnemyScene.cpp" />
+    <ClCompile Include="Source\Map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -129,6 +130,7 @@
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\ResultScene.h" />
     <ClInclude Include="Source\EnemyScene.h" />
+    <ClInclude Include="Source\Map.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
