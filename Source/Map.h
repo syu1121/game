@@ -12,6 +12,7 @@ public:
 	void Update() override;
 	void Draw() override;
 
-	
+	int hModel;
+	int hImage;
 
 };

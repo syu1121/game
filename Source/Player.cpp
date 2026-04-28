@@ -51,7 +51,7 @@ void Player::Draw()
 	}
 	PlayerHPbarWidth = PlayerHPbar;
 	PlayerHPbar = 0;
-
+	
 	DrawBox(RightHPberLeft, HPberTop, RightHPberRight - PlayerHPbarWidth, HPberUnder, GetColor(0, 255, 0), TRUE);
 	if (rate <= 0.2f)
 	{

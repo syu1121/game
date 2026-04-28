@@ -1,9 +1,12 @@
 #include "Map.h"
 #include "globals.h"
 #include "Input.h"
+#include <assert.h>
 
 Map::Map()
 {
+	hModel = MV1LoadModel("data/Map.mv1");
+	
 }
 
 Map::~Map()
@@ -12,19 +15,30 @@ Map::~Map()
 
 void Map::Update()
 {
-
-}
-
-void Map::Draw()
-{
-
 	Point mousePos;
 	if (GetMousePoint(&mousePos.x, &mousePos.y) == -1)
 	{
 		return;
 	}
+	
+	SetLightDirection(VGet(0.0f, -1.0f, 1.0f));
+	MV1SetPosition(hModel, VGet(0.0f, 0.0f, 0.0f));
 
-	int x = 200;
+	if (Input::IsKeyDown(KEY_INPUT_P))
+	{
+		SceneManager::ChangeScene("PLAY");
+	}
+}
+
+void Map::Draw()
+{
+	//SetCameraPositionAndTarget_UpVecY(
+	//	VGet(0.0f, 10.0f, 0.0f), // カメラ位置
+	//	VGet(0.0f, 0.0f, 0.0f));      // 注視点
+	MV1DrawModel(hModel);
+	
+
+	/*int x = 200;
 	int y = 100;
 	int size = 150;
 	int space = 20;
@@ -69,5 +83,5 @@ void Map::Draw()
 
 	
 
-		
+		*/
 }
