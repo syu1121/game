@@ -6,7 +6,8 @@
 Map::Map()
 {
 	hModel = MV1LoadModel("data/Map.mv1");
-	
+	//hImage = LoadGraph("data/siro.pmg");
+	SetBackgroundColor(255, 255, 255);
 }
 
 Map::~Map()
@@ -15,14 +16,50 @@ Map::~Map()
 
 void Map::Update()
 {
+
 	Point mousePos;
 	if (GetMousePoint(&mousePos.x, &mousePos.y) == -1)
 	{
 		return;
 	}
-	
+
+	//MV1GetFrameLocalMatrix(hModel, 0);
+
+	VECTOR pos = MV1GetFramePosition(hModel, 0);
+	MV1SetScale(hModel, VGet(50.0f, 50.0f, 50.0f));
+
+
 	SetLightDirection(VGet(0.0f, -1.0f, 1.0f));
 	MV1SetPosition(hModel, VGet(0.0f, 0.0f, 0.0f));
+
+	SetCameraPositionAndTarget_UpVecY(cameraPos, cameraTarget);
+
+	float speed = 5.0f;
+
+	if (Input::IsKeepKeyDown(KEY_INPUT_W))
+	{
+		cameraPos.z += speed;
+		cameraTarget.z += speed;
+	}
+
+	if (Input::IsKeepKeyDown(KEY_INPUT_S))
+	{
+		cameraPos.z -= speed;
+		cameraTarget.z -= speed;
+	}
+
+
+	if (Input::IsKeepKeyDown(KEY_INPUT_A))
+	{
+		cameraPos.x -= speed;
+		cameraTarget.x -= speed;
+	}
+
+	if (Input::IsKeepKeyDown(KEY_INPUT_D))
+	{
+		cameraPos.x += speed;
+		cameraTarget.x += speed;
+	}
 
 	if (Input::IsKeyDown(KEY_INPUT_P))
 	{
@@ -32,56 +69,10 @@ void Map::Update()
 
 void Map::Draw()
 {
-	//SetCameraPositionAndTarget_UpVecY(
-	//	VGet(0.0f, 10.0f, 0.0f), // カメラ位置
-	//	VGet(0.0f, 0.0f, 0.0f));      // 注視点
+	//DrawGraph(0, 0, hImage, TRUE);
+
 	MV1DrawModel(hModel);
-	
-
-	/*int x = 200;
-	int y = 100;
-	int size = 150;
-	int space = 20;
-
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			int px = x + i * (size + space);
-			int py = y + j * (size + space);
-			DrawBox(x + i * (100 + 20), y + j * (100 + 20), x + i * (100 + 20) + 100, y + j * (100 + 20) + 100, GetColor(255, 255, 255), TRUE);
-			if (i == 0 && j == 0)
-			{
-				DrawBox(x + i * (100 + 20), y + j * (100 + 20), x + i * (100 + 20) + 100, y + j * (100 + 20) + 100, GetColor(0, 255, 0), TRUE);
-			}
-
-			if (i == 3 && j == 3)
-			{
-				DrawBox(x + i * (100 + 20), y + j * (100 + 20), x + i * (100 + 20) + 100, y + j * (100 + 20) + 100, GetColor(255, 0, 0), TRUE);
-			}
-
-
-			if (mousePos.x >= px && mousePos.x <= px + size &&
-				mousePos.y >= py && mousePos.y <= py + size)
-			{
-				
-				if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
-				{
-					DrawBox(x + i * (100 + 20), y + j * (100 + 20), x + i * (100 + 20) + 100, y + j * (100 + 20) + 100, GetColor(255, 255, 255), TRUE);
-					SceneManager::ChangeScene("PLAY");
-				}
-			}
-				
-
-			
-		}
-	}
 
 
 
-	
-
-	
-
-		*/
 }
