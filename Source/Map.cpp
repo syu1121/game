@@ -6,6 +6,7 @@
 Map::Map()
 {
 	hModel = MV1LoadModel("data/Map.mv1");
+	charcterModel = MV1LoadModel("data/character.mv1");
 	//hImage = LoadGraph("data/siro.pmg");
 	SetBackgroundColor(255, 255, 255);
 }
@@ -27,10 +28,21 @@ void Map::Update()
 
 	VECTOR pos = MV1GetFramePosition(hModel, 0);
 	MV1SetScale(hModel, VGet(50.0f, 50.0f, 50.0f));
-
+	MV1SetScale(charcterModel, VGet(30.0f, 30.0f, 30.0f));
 
 	SetLightDirection(VGet(0.0f, -1.0f, 1.0f));
+
+	/*MV1SetPosition(charcterModel, VGet(-75.0f, 0.0f, 0.0f));
+	MV1DrawModel(charcterModel);*/
+
 	MV1SetPosition(hModel, VGet(0.0f, 0.0f, 0.0f));
+	MV1DrawModel(hModel);
+
+	MV1SetPosition(hModel, VGet(0.0f, 0.0f, 85.0f));
+	MV1DrawModel(hModel);
+
+	MV1SetPosition(hModel, VGet(75.0f, 0.0f, 42.5f));
+	MV1DrawModel(hModel);
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos, cameraTarget);
 
@@ -38,27 +50,27 @@ void Map::Update()
 
 	if (Input::IsKeepKeyDown(KEY_INPUT_W))
 	{
-		cameraPos.z += speed;
-		cameraTarget.z += speed;
+		cameraPos.z -= speed;
+		cameraTarget.z -= speed;
 	}
 
 	if (Input::IsKeepKeyDown(KEY_INPUT_S))
 	{
-		cameraPos.z -= speed;
-		cameraTarget.z -= speed;
+		cameraPos.z += speed;
+		cameraTarget.z += speed;
 	}
 
 
 	if (Input::IsKeepKeyDown(KEY_INPUT_A))
 	{
-		cameraPos.x -= speed;
-		cameraTarget.x -= speed;
+		cameraPos.x += speed;
+		cameraTarget.x += speed;
 	}
 
 	if (Input::IsKeepKeyDown(KEY_INPUT_D))
 	{
-		cameraPos.x += speed;
-		cameraTarget.x += speed;
+		cameraPos.x -= speed;
+		cameraTarget.x -= speed;
 	}
 
 	if (Input::IsKeyDown(KEY_INPUT_P))
@@ -71,8 +83,19 @@ void Map::Draw()
 {
 	//DrawGraph(0, 0, hImage, TRUE);
 
-	MV1DrawModel(hModel);
+	
+	
+	//MV1SetPosition(hModel,VGet(posX, 0.0f, posZ));
+	float a = 85.0f;
 
+	
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
 
+		}
+	}
+	
 
 }
