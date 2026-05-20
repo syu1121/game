@@ -15,7 +15,7 @@ public:
 	int hImage;
 	int charcterModel;
 
-	VECTOR cameraPos = VGet(0.0f, 150.0f, 10.0f);
+	VECTOR cameraPos = VGet(0.0f, 150.0f, -10.0f);
 	VECTOR cameraTarget = VGet(0.0f, 0.0f, 0.0f);
 
 };
