@@ -2,6 +2,18 @@
 #include "globals.h"
 #include "Input.h"
 #include <assert.h>
+#include <vector>
+#include "CsvReader.h"
+
+struct Node
+{
+	int id;
+	float x;
+	float z;
+	int link[6];
+};
+std::vector<Node> nodes;
+
 
 Map::Map()
 {
@@ -11,6 +23,8 @@ Map::Map()
 	SetBackgroundColor(100, 150, 255);
 	MV1SetScale(hModel, VGet(50.0f, 50.0f, 50.0f));
 	MV1SetScale(charcterModel, VGet(1.0f, 1.0f, 1.0f));
+	
+
 }
 
 Map::~Map()
@@ -25,22 +39,11 @@ void Map::Update()
 	{
 		return;
 	}
-
-	//MV1GetFrameLocalMatrix(hModel, 0);
-
-	//VECTOR pos = MV1GetFramePosition(hModel, 0);
-	
-
 	SetLightDirection(VGet(0.0f, -1.0f, 1.0f));
-
-	/*MV1SetPosition(charcterModel, VGet(-75.0f, 0.0f, 0.0f));
-	MV1DrawModel(charcterModel);*/
-
-	
 
 	VECTOR pos = MV1GetPosition(hModel);
 
-	float speed = 0.1f;
+	float speed = 1.0f;
 
 	if (Input::IsKeepKeyDown(KEY_INPUT_W))
 	{
@@ -99,9 +102,27 @@ void Map::Update()
 	DrawFormatString(0, 0, GetColor(0, 0, 0), "camera: %.1f %.1f %.1f", cameraPos.x, cameraPos.y, cameraPos.z);
 	DrawFormatString(20, 20, GetColor(0, 0, 0), "model: %.1f %.1f %.1f", pos.x, pos.y, pos.z);
 
-	MV1GetPosition(hModel);
-	//if (mousePos.x )
+	CsvReader csv("data/Map.csv");
+	/*VECTOR nearPos;
+	VECTOR farPos;
 
+	nearPos = ConvScreenPosToWorldPos(VGet((float)mousePos.x, (float)mousePos.y, 0.0f));
+	farPos = ConvScreenPosToWorldPos(VGet((float)mousePos.x, (float)mousePos.y, 1.0f));*/
+	for (int line = 1; line < csv.GetLines(); line++)
+	{
+		Node node;
+		node.id = csv.GetInt(line, 0);
+		node.x = csv.GetInt(line, 1);
+		node.z = csv.GetInt(line, 2);
+
+		for (int i = 0; i < 6; i++)
+		{
+			node.link[i] = csv.GetInt(line, i + 3);
+		}
+
+		nodes.push_back(node);
+	}
+	
 
 }
 
@@ -119,10 +140,17 @@ void Map::Draw()
 	MV1SetPosition(hModel, VGet(75.0f, 0.0f, 42.5f));
 	MV1DrawModel(hModel);*/
 
-	float xSpace = 85.0f;
-	float zSpace = 75.0f;
+	float xSpace = 100.0f;
+	float zSpace = 85.0f;
+	
+	for (const auto& node : nodes)
+	{
+		
+		MV1SetPosition(hModel, VGet(node.x * xSpace, 0.0f, node.z * zSpace));
+		MV1DrawModel(hModel);
 
-	for (int i = 0; i < 4; i++)
+	}
+	/*for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 2; j++)
 		{
@@ -139,5 +167,5 @@ void Map::Draw()
 			MV1SetPosition(hModel, VGet(posX, 0.0f, posZ));
 			MV1DrawModel(hModel);
 		}
-	}
+	}*/
 }

@@ -170,14 +170,14 @@ void Playarea::Update()
 		string log = string("Player: ") + GetElementName(p1) + " vs Enemy: " + GetElementName(e1) + " -> " + to_string((int)dmg1) + " damage" + result1;
 		string log2 = string("Player: ") +GetElementName(p2) + " vs Enemy: " + GetElementName(e2) + " -> " + to_string((int)dmg2) + " damage" + result2;
 
-		battleLog.push_back(log);
+		/*battleLog.push_back(log);
 		battleLog.push_back(log2);
 		
 		string enemylog = string("Enemy: ") + GetElementName(e1) + " vs Player: " + GetElementName(p1) + " -> " + to_string((int)enemydmg1) + " damage";
 		string enemylog2 = string("Enemy: ") + GetElementName(e2) + " vs Player: " + GetElementName(p2) + " -> " + to_string((int)enemydmg2) + " damage";
 
 		battleLog.push_back(enemylog);
-		battleLog.push_back(enemylog2);
+		battleLog.push_back(enemylog2);*/
 
 
 
