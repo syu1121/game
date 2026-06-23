@@ -11,8 +11,12 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void CameraWheel();
+
 	int hModel;
-	int hImage;
+	int hStart;
+	int hGoal;
+	int hSelect;
 	int charcterModel;
 
 	VECTOR cameraPos = VGet(0.0f, 150.0f, -10.0f);
