@@ -12,6 +12,7 @@ public:
 	void Draw() override;
 
 	void CameraWheel();
+	void MouseHit();
 
 	int hModel;
 	int hStart;
@@ -19,7 +20,9 @@ public:
 	int hSelect;
 	int charcterModel;
 
+	int selectNode = -1;
+
 	VECTOR cameraPos = VGet(0.0f, 150.0f, -10.0f);
 	VECTOR cameraTarget = VGet(0.0f, 0.0f, 0.0f);
-
+	
 };
