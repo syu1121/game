@@ -201,8 +201,6 @@ void Map::CameraWheel()
 
 	float len = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
 
-	
-
 	dir.x /= len;
 	dir.y /= len;
 	dir.z /= len;
