@@ -20,6 +20,8 @@ public:
 	int hSelect;
 	int charcterModel;
 
+	VECTOR playerPos;
+	int playerNode = -1;
 	int selectNode = -1;
 
 	VECTOR cameraPos = VGet(0.0f, 150.0f, -10.0f);

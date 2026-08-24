@@ -29,14 +29,16 @@ Map::Map()
 	hStart = MV1LoadModel("data/MAP/Start.mv1");
 	hGoal = MV1LoadModel("data/MAP/Goal.mv1");
 	hSelect = MV1LoadModel("data/MAP/Select.mv1");
-	charcterModel = MV1LoadModel("data/character.mv1");
+	charcterModel = MV1LoadModel("data/Chara/enemy1.mv1");
 	
 	SetBackgroundColor(100, 150, 255);
 	MV1SetScale(hModel, VGet(50.0f, 50.0f, 50.0f));
 	MV1SetScale(hStart, VGet(50.0f, 50.0f, 50.0f));
 	MV1SetScale(hGoal, VGet(50.0f, 50.0f, 50.0f));
 	MV1SetScale(hSelect, VGet(50.0, 50.0, 50.0));
-	//MV1SetScale(charcterModel, VGet(1.0f, 1.0f, 1.0f));
+	MV1SetScale(charcterModel, VGet(15.0f, 15.0f, 15.0f));
+
+	
 	
 	CsvReader csv("data/Map.csv");
 	for (int line = 1; line < csv.GetLines(); line++)
@@ -54,7 +56,15 @@ Map::Map()
 
 		nodes.push_back(node);
 	}
-
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		if (nodes[i].type == START)
+		{
+			playerNode = i;
+			playerPos = VGet(nodes[i].x, 20.0f, nodes[i].z);
+			break;
+		}
+	}
 	
 }
 
@@ -124,10 +134,14 @@ void Map::Update()
 		}*/
 	}
 
+	if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
+	{
+		MouseHit();
+	}
 	
 	CameraWheel();
 	
-	MouseHit();
+	
 
 
 	DrawFormatString(0, 0, GetColor(0, 0, 0), "camera: %.1f %.1f %.1f", cameraPos.x, cameraPos.y, cameraPos.z);
@@ -160,6 +174,8 @@ void Map::Draw()
 		case START:
 			MV1SetPosition(hStart, VGet(node.x, 0.0f, node.z));
 			MV1DrawModel(hStart);
+
+			
 			break;
 
 		case GOAL:
@@ -172,6 +188,7 @@ void Map::Draw()
 			MV1DrawModel(hModel);
 			break;
 		}
+
 		if (isLink)
 		{
 			MV1SetPosition(hSelect, VGet(node.x, 0.0f, node.z));
@@ -181,11 +198,13 @@ void Map::Draw()
 		if (i == selectNode)
 		{
 			DrawFormatString(node.x, node.z, GetColor(255, 0, 0), "OK");
-			MV1SetPosition(hSelect, VGet(node.x, 0.0f, node.z));
-			MV1DrawModel(hSelect);
+			/*MV1SetPosition(hSelect, VGet(node.x, 0.0f, node.z));
+			MV1DrawModel(hSelect);*/
 			DrawFormatString(0, 40, GetColor(255, 255, 255), "selectNode = %d", selectNode);
 		}
 	}
+	MV1SetPosition(charcterModel, playerPos);
+	MV1DrawModel(charcterModel);
 }
 void Map::CameraWheel()
 {
@@ -232,38 +251,57 @@ void Map::CameraWheel()
 
 void Map::MouseHit()
 {
-    Point mousePos;
-    GetMousePoint(&mousePos.x, &mousePos.y);
+	Point mousePos;
+	GetMousePoint(&mousePos.x, &mousePos.y);
 
-    // レイの始点と終点
-    VECTOR nearPos = ConvScreenPosToWorldPos(
-        VGet((float)mousePos.x, (float)mousePos.y, 0.0f));
+	// レイの始点と終点
+	VECTOR nearPos = ConvScreenPosToWorldPos(VGet((float)mousePos.x, (float)mousePos.y, 0.0f));
 
-    VECTOR farPos = ConvScreenPosToWorldPos(
-        VGet((float)mousePos.x, (float)mousePos.y, 1.0f));
+	VECTOR farPos = ConvScreenPosToWorldPos(VGet((float)mousePos.x, (float)mousePos.y, 1.0f));
 
-    // 地面(Y=0)との交点
-    float t = -nearPos.y / (farPos.y - nearPos.y);
+	// 地面(Y=0)との交点
+	float t = -nearPos.y / (farPos.y - nearPos.y);
 
-    VECTOR hitPos;
-    hitPos.x = nearPos.x + (farPos.x - nearPos.x) * t;
-    hitPos.y = 0.0f;
-    hitPos.z = nearPos.z + (farPos.z - nearPos.z) * t;
+	VECTOR hitPos;
 
-    selectNode = -1;
-    float minDist = 40.0f;
+	hitPos.x = nearPos.x + (farPos.x - nearPos.x) * t;
+	hitPos.y = 0.0f;
+	hitPos.z = nearPos.z + (farPos.z - nearPos.z) * t;
 
-    for (int i = 0; i < nodes.size(); i++)
-    {
-        float dx = hitPos.x - nodes[i].x;
-        float dz = hitPos.z - nodes[i].z;
+	// クリックしたマスを探す
+	selectNode = -1;
 
-        float dist = sqrtf(dx * dx + dz * dz);
+	float minDist = 40.0f;
 
-        if (dist < minDist)
-        {
-            minDist = dist;
-            selectNode = i;
-        }
-    }
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		float dx = hitPos.x - nodes[i].x;
+		float dz = hitPos.z - nodes[i].z;
+
+		float dist = sqrtf(dx * dx + dz * dz);
+
+		if (dist < minDist)
+		{
+			minDist = dist;
+			selectNode = i;
+		}
+	}
+
+	// マスが選択された場合
+	if (selectNode != -1)
+	{
+		// キャラがいるマスの隣接マスか確認
+		for (int j = 0; j < 6; j++)
+		{
+			if (nodes[playerNode].link[j] == nodes[selectNode].id)
+			{
+				// 隣接していたら移動
+				playerNode = selectNode;
+
+				playerPos = VGet( nodes[playerNode].x, 20.0f, nodes[playerNode].z);
+
+				break;
+			}
+		}
+	}
 }
