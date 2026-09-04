@@ -29,6 +29,7 @@ Map::Map()
 	hStart = MV1LoadModel("data/MAP/Start.mv1");
 	hGoal = MV1LoadModel("data/MAP/Goal.mv1");
 	hSelect = MV1LoadModel("data/MAP/Select.mv1");
+	hClear = MV1LoadModel("data/MAP/Clear.mv1");
 	charcterModel = MV1LoadModel("data/Chara/enemy1.mv1");
 	
 	SetBackgroundColor(100, 150, 255);
@@ -36,6 +37,7 @@ Map::Map()
 	MV1SetScale(hStart, VGet(50.0f, 50.0f, 50.0f));
 	MV1SetScale(hGoal, VGet(50.0f, 50.0f, 50.0f));
 	MV1SetScale(hSelect, VGet(50.0, 50.0, 50.0));
+	MV1SetScale(hClear, VGet(50.0f, 50.0f, 50.0f));
 	MV1SetScale(charcterModel, VGet(15.0f, 15.0f, 15.0f));
 
 	
@@ -75,11 +77,11 @@ Map::~Map()
 void Map::Update()
 {
 
-	/*Point mousePos;
+	Point mousePos;
 	if (GetMousePoint(&mousePos.x, &mousePos.y) == -1)
 	{
 		return;
-	}*/
+	}
 	SetLightDirection(VGet(0.0f, -1.0f, 1.0f));
 
 	VECTOR pos = MV1GetPosition(hModel);
@@ -136,14 +138,37 @@ void Map::Update()
 
 	if (Input::IsButtonDown(MOUSE_INPUT_LEFT))
 	{
+		
+
+		if (selectNode != -1)
+		{
+			isConfirm = true;
+		}
+
+		if (isConfirm)
+		{
+			if (mousePos.x > 330 && mousePos.x <= 450 && mousePos.y >= 300 && mousePos.y <= 360)
+			{
+				isConfirm = false;
+				SceneManager::ChangeScene("PLAY");
+			}
+
+			if (mousePos.x >= 550 && mousePos.x <= 700 && mousePos.y >= 300 && mousePos.y <= 360)
+			{
+				isConfirm = false;
+			}
+		}
 		MouseHit();
 	}
 	
 	CameraWheel();
 	
-	
+	DrawFormatString(100, 20, GetColor(255, 255, 255), "playerNode = %d", playerNode);
 
-
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		DrawFormatString(200, 40 + i * 20, GetColor(255, 255, 255), "id=%d type=%d", nodes[i].id, nodes[i].type);
+	}
 	DrawFormatString(0, 0, GetColor(0, 0, 0), "camera: %.1f %.1f %.1f", cameraPos.x, cameraPos.y, cameraPos.z);
 	//DrawFormatString(20, 20, GetColor(0, 0, 0), "model: %.1f %.1f %.1f", pos.x, pos.y, pos.z);
 }
@@ -157,15 +182,20 @@ void Map::Draw()
 
 		if (selectNode != -1)
 		{
-			for (int j = 0; j < 6; j++)
+
+			if (playerNode >= 0 && playerNode < nodes.size())
 			{
-				DrawFormatString(0, 60 + j * 20, GetColor(255, 255, 255), "link[%d]=%d", j, nodes[selectNode].link[j]);
-				if (nodes[selectNode].link[j] == node.id)
+				for (int j = 0; j < 6; j++)
 				{
-					isLink = true;
-					break;
+					DrawFormatString(0, 60 + j * 20, GetColor(255, 255, 255), "link[%d]=%d", j, nodes[selectNode].link[j]);
+					if (nodes[playerNode].link[j] == node.id)
+					{
+						isLink = true;
+						break;
+					}
 				}
 			}
+			
 		}
 		
 
@@ -175,7 +205,6 @@ void Map::Draw()
 			MV1SetPosition(hStart, VGet(node.x, 0.0f, node.z));
 			MV1DrawModel(hStart);
 
-			
 			break;
 
 		case GOAL:
@@ -194,7 +223,7 @@ void Map::Draw()
 			MV1SetPosition(hSelect, VGet(node.x, 0.0f, node.z));
 			MV1DrawModel(hSelect);
 		}
-		// 選択マスを表示
+		 //選択マスを表示
 		if (i == selectNode)
 		{
 			DrawFormatString(node.x, node.z, GetColor(255, 0, 0), "OK");
@@ -202,9 +231,24 @@ void Map::Draw()
 			MV1DrawModel(hSelect);*/
 			DrawFormatString(0, 40, GetColor(255, 255, 255), "selectNode = %d", selectNode);
 		}
+		
 	}
 	MV1SetPosition(charcterModel, playerPos);
 	MV1DrawModel(charcterModel);
+	
+
+	if (isConfirm == true)
+	{
+		DrawBox(250, 200, 750, 400, GetColor(255, 255, 255), TRUE);
+		DrawBox(250, 200, 750, 400, GetColor(0, 0, 0), FALSE);
+
+		DrawString(400, 200, "ここでいいですか", GetColor(0, 0, 0));
+		DrawBox(330, 300, 450, 360, GetColor(200, 200, 200), TRUE);
+		DrawString(350, 350, "OK", GetColor(0, 0, 0));
+		DrawBox(550, 300, 700, 360, GetColor(200, 200, 200), TRUE);
+		DrawString(600, 330, "キャンセル", GetColor(0, 0, 0));
+
+	}
 }
 void Map::CameraWheel()
 {
@@ -254,22 +298,19 @@ void Map::MouseHit()
 	Point mousePos;
 	GetMousePoint(&mousePos.x, &mousePos.y);
 
-	// レイの始点と終点
 	VECTOR nearPos = ConvScreenPosToWorldPos(VGet((float)mousePos.x, (float)mousePos.y, 0.0f));
 
 	VECTOR farPos = ConvScreenPosToWorldPos(VGet((float)mousePos.x, (float)mousePos.y, 1.0f));
 
-	// 地面(Y=0)との交点
+	// 地面との交点
 	float t = -nearPos.y / (farPos.y - nearPos.y);
 
 	VECTOR hitPos;
-
 	hitPos.x = nearPos.x + (farPos.x - nearPos.x) * t;
 	hitPos.y = 0.0f;
 	hitPos.z = nearPos.z + (farPos.z - nearPos.z) * t;
 
-	// クリックしたマスを探す
-	selectNode = -1;
+	
 
 	float minDist = 40.0f;
 
@@ -287,21 +328,23 @@ void Map::MouseHit()
 		}
 	}
 
-	// マスが選択された場合
-	if (selectNode != -1)
+	// マスをクリックできていなかった
+	if (selectNode == -1)
 	{
-		// キャラがいるマスの隣接マスか確認
-		for (int j = 0; j < 6; j++)
+		return;
+	}
+
+	// キャラがいるマスの隣か確認
+	for (int j = 0; j < 6; j++)
+	{
+		if (nodes[playerNode].link[j] == nodes[selectNode].id)
 		{
-			if (nodes[playerNode].link[j] == nodes[selectNode].id)
-			{
-				// 隣接していたら移動
-				playerNode = selectNode;
+			// 隣接していたら移動
+			playerNode = selectNode;
 
-				playerPos = VGet( nodes[playerNode].x, 20.0f, nodes[playerNode].z);
+			playerPos = VGet(nodes[playerNode].x, 20.0f, nodes[playerNode].z);
 
-				break;
-			}
+			return;
 		}
 	}
 }
